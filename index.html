@@ -212,7 +212,7 @@
     }
 
     function matchWords(input) {
-      const clean = input.toUpperCase().replace(/[^A-Z?]/g, '');
+      const clean = input.toLowerCase().replace(/[^a-z?]/g, '');
       const wildcards = (clean.match(/\?/g) || []).length;
       const known = clean.replace(/\?/g, '').split('').sort().join('');
       const matches = new Set();
