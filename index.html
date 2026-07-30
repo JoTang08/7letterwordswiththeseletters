@@ -185,105 +185,27 @@
   </div>
 
   <script defer>
-    // ============================================================
-    // DEMO WORD LIST — Replace with full ENABLE word list later
-    // Download from: https://github.com/dwyl/english-words
-    // ============================================================
-    const SEVEN_LETTER_WORDS = [
-      "chaster","rachets","ratches","satchel","scareth","traches",
-      "abandon","ability","absence","academy","account","achieve",
-      "acquire","address","advance","adverse","airport","alcohol",
-      "amazing","analyst","analyze","ancient","angrily","another",
-      "anxious","applied","archive","arrange","article","artists",
-      "assault","attempt","attract","auction","average","awesome",
-      "balance","bargain","battery","bedroom","believe","beneath",
-      "benefit","biggest","billion","bladder","blanket","blessed",
-      "blocked","booking","bracket","brother","browser","builder",
-      "cabinet","calcium","calling","capable","capital","captain",
-      "capture","careful","carrier","cartoon","ceiling","central",
-      "certain","chamber","channel","chapter","charity","charter",
-      "checked","chicken","chronic","circuit","citizen","classic",
-      "climate","closing","cluster","coastal","collect","college",
-      "combine","comfort","command","comment","company","compare",
-      "compete","complex","concept","concern","confirm","connect",
-      "consist","consult","contact","contain","content","contest",
-      "context","control","convert","correct","counter","country",
-      "coupled","courage","creator","cricket","crucial","culture",
-      "current","cutting","damaged","dealing","decided","declare",
-      "default","defense","deficit","deliver","density","deposit",
-      "deserts","deserve","desired","desktop","despite","destroy",
-      "develop","diagram","digital","disease","display","dispute",
-      "distant","diverse","divided","dolphin","dramatic","drawing",
-      "dressed","driving","dynamic","eastern","economy","edition",
-      "educate","elderly","element","emotion","emperor","enabled",
-      "engaged","english","enhance","enormous","episode","essence",
-      "evening","evident","examine","example","excited","exclude",
-      "execute","exhaust","exhibit","expense","explain","exploit",
-      "explore","express","extract","extreme","factory","failure",
-      "fashion","feature","federal","fiction","fighter","finally",
-      "finance","finding","firefox","fishing","flavour","florida",
-      "foreign","forever","formula","fortune","forward","founder",
-      "freedom","further","gateway","general","genetic","genuine",
-      "gesture","glasses","glimpse","granted","graphic","gravity",
-      "greater","grocery","growing","habitat","halfway","handler",
-      "hanging","harbour","healthy","hearing","heavily","helpful",
-      "herself","highway","himself","history","holding","holiday",
-      "horizon","hostile","housing","hundred","husband","illegal",
-      "imagine","immense","implied","impress","improve","include",
-      "incomes","initial","inquiry","install","instead","insulin",
-      "intense","invalid","involve","isolate","jointly","journal",
-      "journey","justice","justify","killing","kitchen","knowing",
-      "landing","largest","laundry","lawyers","leaders","leading",
-      "leather","leaving","lessons","letting","liberal","liberty",
-      "license","limited","listing","literal","logical","lottery",
-      "luggage","machines","managed","manager","mandate","massive",
-      "maximum","measure","medical","meeting","mention","merchant",
-      "million","mineral","minimal","minimum","miracle","missing",
-      "mission","mistake","mixture","monitor","monthly","morning",
-      "mounted","mystery","natural","nearest","neither","network",
-      "neutral","notable","nothing","nowhere","nuclear","nursing",
-      "obvious","offense","officer","ongoing","opening","operate",
-      "opinion","organic","outdoor","outlook","outside","overall",
-      "package","painful","painting","passage","passing","patient",
-      "pattern","payment","pending","percent","perfect","perhaps",
-      "picture","planned","plastic","playing","pleased","popular",
-      "portion","poverty","predict","premier","premium","prepare",
-      "present","pressed","primary","printer","privacy","private",
-      "problem","proceed","process","produce","product","profile",
-      "program","project","promise","promote","propose","protect",
-      "protein","protest","provide","publish","purpose","pursuit",
-      "qualify","quarter","quickly","radical","rainbow","rapidly",
-      "reading","reality","realize","receipt","receive","recover",
-      "reflect","regular","related","release","remains","removal",
-      "removed","replace","request","require","reserve","resolve",
-      "respect","respond","restore","revenue","rhetoric","routine",
-      "running","satisfy","scanner","scatter","schemes","scholar",
-      "science","scratch","section","segment","senator","serving",
-      "session","setting","seventh","shelter","silence","similar",
-      "sitting","slavery","smaller","smoking","society","soldier",
-      "somehow","speaker","special","species","sponsor","storage",
-      "strange","student","subject","succeed","success","suggest",
-      "summary","support","suppose","supreme","surface","surplus",
-      "survive","suspect","sustain","teacher","tension","therapy",
-      "thought","through","thunder","tobacco","tonight","totally",
-      "tourism","tourist","tracked","trading","traffic","trained",
-      "trigger","trouble","turning","typical","undergo","unified",
-      "uniform","unknown","unusual","utility","variety","vehicle",
-      "venture","version","veteran","victory","village","violent",
-      "visible","vitamin","walking","wanting","warning","warrant",
-      "wearing","weather","webster","website","wedding","weekend",
-      "welcome","western","whether","whisper","willing","windows",
-      "without","witness","working","worried","worship","writers",
-      "writing","younger"
-    ];
-
-    // Preprocess: build lookup map { sortedLetters: [words] }
+    // Word map built from words7.json (loaded async)
     const WORD_MAP = {};
-    SEVEN_LETTER_WORDS.forEach(word => {
-      const sorted = word.split('').sort().join('');
-      if (!WORD_MAP[sorted]) WORD_MAP[sorted] = [];
-      WORD_MAP[sorted].push(word);
-    });
+    let wordsReady = false;
+
+    fetch('/words7.json')
+      .then(r => r.json())
+      .then(words => {
+        words.forEach(word => {
+          const sorted = word.split('').sort().join('');
+          if (!WORD_MAP[sorted]) WORD_MAP[sorted] = [];
+          WORD_MAP[sorted].push(word);
+        });
+        wordsReady = true;
+        document.getElementById('searchBtn').textContent = 'Find Words';
+      })
+      .catch(() => {
+        document.getElementById('searchBtn').textContent = 'Find Words';
+        document.getElementById('results').innerHTML = '<div class="empty">Failed to load word list. Please refresh.</div>';
+      });
+
+    document.getElementById('searchBtn').textContent = 'Loading…';
 
     function sortLetters(str) {
       return str.toUpperCase().replace(/[^A-Z?]/g, '').split('').sort().join('');
@@ -365,6 +287,11 @@
     function renderResults() {
       const input = document.getElementById('letters').value.trim();
       const container = document.getElementById('results');
+
+      if (!wordsReady) {
+        container.innerHTML = '<div class="empty">Word list is still loading, please wait…</div>';
+        return;
+      }
 
       if (!input) {
         container.innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
