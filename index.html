@@ -80,12 +80,7 @@
     .word-tag { background: #eef2ff; color: #4338ca; padding: 0.5rem 1rem; border-radius: 8px; font-size: 1.05rem; font-weight: 500; cursor: pointer; transition: background 0.15s; }
     .word-tag:hover { background: #c7d2fe; }
     .empty { color: #94a3b8; font-size: 1rem; text-align: center; padding: 2rem 0; }
-    .other-lengths { margin-top: 2rem; border-top: 1px solid #e2e8f0; padding-top: 1.5rem; }
-    .other-lengths summary { font-size: 1rem; font-weight: 600; color: #475569; cursor: pointer; }
-    .other-lengths summary:hover { color: #6366f1; }
-    .other-group { margin-top: 1rem; }
-    .other-group h3 { font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem; }
-    .info-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
+.info-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
     .info-section h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #0f172a; }
     .info-section p, .info-section li { color: #475569; font-size: 0.95rem; margin-bottom: 0.5rem; }
     .info-section ul { padding-left: 1.25rem; margin-bottom: 1rem; }
@@ -236,54 +231,6 @@
       return [...matches].sort();
     }
 
-    function findOtherLengths(input) {
-      // Simple placeholder: find words from a small pool of common short words
-      // In a full version, you'd use a complete dictionary
-      const common = ["a","ab","ace","act","add","age","ago","aid","aim","air","all","and","ant","ape","arc","are",
-        "arm","art","ash","ask","ate","axe","bad","bag","ban","bar","bat","bed","bet","bid","big","bit","bow",
-        "box","boy","bud","bug","bus","but","buy","cab","can","cap","car","cat","cog","cop","cow","cry","cub",
-        "cup","cut","dad","dam","day","den","dew","did","dig","dim","dip","dog","dot","dry","dub","dug","dye",
-        "ear","eat","egg","ego","elm","end","era","eve","eye","fan","far","fat","fax","fed","few","fig","fin",
-        "fir","fit","fix","fly","fog","for","fox","fry","fun","fur","gag","gap","gas","gel","get","gin","gnu",
-        "god","got","gum","gun","gut","guy","gym","had","ham","has","hat","hay","hen","her","hew","hid","him",
-        "hip","his","hit","hog","hop","hot","how","hub","hue","hug","hum","hut","ice","icy","ill","imp","ink",
-        "inn","ion","ire","irk","its","ivy","jab","jag","jam","jar","jaw","jay","jet","jig","job","jog","jot",
-        "joy","jug","jut","keg","ken","key","kid","kin","kit","lab","lad","lag","lap","law","lay","lea","led",
-        "leg","let","lid","lie","lip","lit","log","lot","low","lug","mad","man","map","mar","mat","maw","may",
-        "men","met","mid","mix","mob","mod","mom","mop","mow","mud","mug","nap","net","new","nil","nip","nit",
-        "nod","nor","not","now","nun","nut","oak","oar","oat","odd","ode","off","oft","ohm","oil","old","one",
-        "opt","orb","ore","our","out","owe","owl","own","pad","pal","pan","pap","par","pat","paw","pay","pea",
-        "peg","pen","pep","per","pet","pew","pie","pig","pin","pit","ply","pod","pop","pot","pow","pry","pub",
-        "pug","pun","pup","pus","put","rad","rag","ram","ran","rap","rat","raw","ray","red","ref","rep","rib",
-        "rid","rig","rim","rip","rob","rod","roe","rot","row","rub","rug","rum","run","rut","rye","sac","sad",
-        "sag","sap","sat","saw","say","sea","set","sew","she","shy","sin","sip","sir","sis","sit","six","ski",
-        "sky","sly","sob","sod","son","sop","sot","sow","soy","spa","spy","sty","sub","sue","sum","sun","sup",
-        "tab","tad","tag","tan","tap","tar","tat","tax","tea","ten","the","thy","tic","tie","tin","tip","toe",
-        "ton","too","top","tot","tow","toy","try","tub","tug","two","urn","use","van","vat","vet","vex","via",
-        "vie","vim","vow","wad","wag","war","was","wax","way","web","wet","who","why","wig","win","wis","wit",
-        "woe","wok","won","woo","wow","yak","yam","yap","yaw","yea","yes","yet","yew","yin","you","zap","zed",
-        "zen","zig","zip","zoo"];
-      const clean = input.toUpperCase().replace(/[^A-Z?]/g, '').split('').sort();
-      const byLength = {};
-      // Very naive: just return common words whose letters are a subset (demo only)
-      // Full version needs proper anagram matching across all lengths
-      common.forEach(w => {
-        if (w.length === 7) return; // skip 7-letter, already shown
-        const wSorted = w.toUpperCase().split('').sort();
-        let ci = 0, wi = 0;
-        while (ci < clean.length && wi < wSorted.length) {
-          if (clean[ci] === wSorted[wi]) { ci++; wi++; }
-          else if (clean[ci] < wSorted[wi]) ci++;
-          else break;
-        }
-        if (wi === wSorted.length) {
-          if (!byLength[w.length]) byLength[w.length] = new Set();
-          byLength[w.length].add(w);
-        }
-      });
-      return byLength;
-    }
-
     function renderResults() {
       const input = document.getElementById('letters').value.trim();
       const container = document.getElementById('results');
@@ -318,20 +265,6 @@
       } else {
         html += '<h2>7-Letter Words</h2>';
         html += '<div class="empty">No 7-letter words found. Try different letters or use ? as a wildcard.</div>';
-      }
-
-      const otherLengths = findOtherLengths(clean);
-      const lengths = Object.keys(otherLengths).sort((a,b) => b - a);
-      if (lengths.length > 0) {
-        html += '<details class="other-lengths"><summary>Show more word lengths ▼</summary>';
-        lengths.forEach(len => {
-          const words = [...otherLengths[len]].sort();
-          html += '<div class="other-group"><h3>' + len + '-Letter Words (' + words.length + ')</h3>';
-          html += '<div class="word-list">';
-          words.forEach(w => { html += '<span class="word-tag">' + w + '</span>'; });
-          html += '</div></div>';
-        });
-        html += '</details>';
       }
 
       container.innerHTML = html;
