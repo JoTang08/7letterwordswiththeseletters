@@ -69,11 +69,28 @@
     header { text-align: center; margin-bottom: 2rem; }
     header h1 { font-size: 1.75rem; color: #0f172a; margin-bottom: 0.5rem; }
     header p { color: #64748b; font-size: 1rem; }
-    .input-group { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
-    .input-group input { flex: 1; padding: 1rem 1.25rem; font-size: 1.25rem; border: 2px solid #e2e8f0; border-radius: 12px; outline: none; transition: border-color 0.2s; }
-    .input-group input:focus { border-color: #6366f1; }
-    .input-group button { padding: 1rem 2rem; font-size: 1.1rem; font-weight: 600; background: #6366f1; color: #fff; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; white-space: nowrap; }
-    .input-group button:hover { background: #4f46e5; }
+    .tiles-row { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem; }
+    .tile-input {
+      width: 68px; height: 68px;
+      font-size: 1.75rem; font-weight: 700;
+      text-align: center; text-transform: uppercase;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      outline: none;
+      background: #fff;
+      color: #0f172a;
+      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+      caret-color: transparent;
+    }
+    .tile-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
+    .tile-input.filled { background: #eef2ff; border-color: #a5b4fc; color: #3730a3; }
+    .tile-input.wildcard { background: #fef9c3; border-color: #fbbf24; color: #92400e; }
+    .search-btn-row { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1rem; }
+    .search-btn-row button { padding: 0.875rem 2.5rem; font-size: 1.05rem; font-weight: 600; background: #6366f1; color: #fff; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
+    .search-btn-row button:hover { background: #4f46e5; }
+    .reset-btn { padding: 0.875rem 1.5rem; font-size: 1.05rem; font-weight: 600; background: transparent; color: #94a3b8; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: color 0.2s, border-color 0.2s; display: none; }
+    .reset-btn:hover { color: #ef4444; border-color: #ef4444; }
+    .reset-btn.visible { display: block; }
     .hint { font-size: 0.875rem; color: #94a3b8; margin-bottom: 2rem; text-align: center; }
     .results h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #334155; }
     .word-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
@@ -87,8 +104,7 @@
     footer { text-align: center; margin-top: 3rem; padding: 1.5rem 0; color: #94a3b8; font-size: 0.85rem; border-top: 1px solid #e2e8f0; }
     footer a { color: #6366f1; text-decoration: none; }
     @media (max-width: 500px) {
-      .input-group { flex-direction: column; }
-      .input-group button { width: 100%; }
+      .tile-input { width: 42px; height: 42px; font-size: 1.25rem; border-radius: 8px; }
       header h1 { font-size: 1.35rem; }
     }
   </style>
@@ -100,11 +116,20 @@
       <p>Type your letters and instantly find all 7-letter words you can make</p>
     </header>
 
-    <div class="input-group">
-      <input type="text" id="letters" placeholder="e.g. TRAEHSC" maxlength="15" autofocus autocomplete="off" autocapitalize="off" spellcheck="false">
-      <button id="searchBtn">Find Words</button>
+    <div class="tiles-row" id="tilesRow">
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text" autofocus>
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
+      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
     </div>
-    <p class="hint">Use <strong>?</strong> as a wildcard for unknown letters</p>
+    <div class="search-btn-row">
+      <button id="searchBtn">Find Words</button>
+      <button class="reset-btn" id="resetBtn">↺ Reset</button>
+    </div>
+    <p class="hint">Use <strong>?</strong> as a wildcard for blank tiles · click a tile to edit</p>
 
     <div class="results" id="results">
       <div class="empty">Enter some letters above to get started 👆</div>
@@ -202,8 +227,62 @@
 
     document.getElementById('searchBtn').textContent = 'Loading…';
 
-    function sortLetters(str) {
-      return str.toUpperCase().replace(/[^A-Z?]/g, '').split('').sort().join('');
+    // Tile keyboard navigation
+    const tiles = Array.from(document.querySelectorAll('.tile-input'));
+    tiles.forEach((tile, i) => {
+      tile.addEventListener('keydown', function(e) {
+        if (e.key === 'Backspace') {
+          e.preventDefault();
+          if (tile.value !== '') {
+            tile.value = '';
+            updateTileStyles();
+          } else if (i > 0) {
+            tiles[i - 1].value = '';
+            tiles[i - 1].focus();
+            updateTileStyles();
+          }
+        } else if (e.key === 'ArrowLeft') {
+          if (i > 0) tiles[i - 1].focus();
+        } else if (e.key === 'ArrowRight') {
+          if (i < tiles.length - 1) tiles[i + 1].focus();
+        } else if (e.key === 'Enter') {
+          renderResults();
+        } else if (e.key === '?') {
+          e.preventDefault();
+          tile.value = '?';
+          updateTileStyles();
+          if (i < tiles.length - 1) tiles[i + 1].focus();
+        } else if (/^[a-zA-Z]$/.test(e.key)) {
+          e.preventDefault();
+          tile.value = e.key.toUpperCase();
+          updateTileStyles();
+          if (i < tiles.length - 1) tiles[i + 1].focus();
+        }
+      });
+      tile.addEventListener('click', function() { tile.select(); });
+    });
+
+    function updateTileStyles() {
+      let filled = 0;
+      tiles.forEach(t => {
+        t.classList.remove('filled', 'wildcard');
+        if (t.value === '?') { t.classList.add('wildcard'); filled++; }
+        else if (t.value) { t.classList.add('filled'); filled++; }
+      });
+      const resetBtn = document.getElementById('resetBtn');
+      if (filled === tiles.length) resetBtn.classList.add('visible');
+      else resetBtn.classList.remove('visible');
+    }
+
+    document.getElementById('resetBtn').addEventListener('click', function() {
+      tiles.forEach(t => { t.value = ''; t.classList.remove('filled', 'wildcard'); });
+      document.getElementById('results').innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
+      document.getElementById('resetBtn').classList.remove('visible');
+      tiles[0].focus();
+    });
+
+    function getLettersInput() {
+      return tiles.map(t => t.value).join('');
     }
 
     function matchWords(input) {
@@ -232,7 +311,7 @@
     }
 
     function renderResults() {
-      const input = document.getElementById('letters').value.trim();
+      const input = getLettersInput();
       const container = document.getElementById('results');
 
       if (!wordsReady) {
@@ -240,7 +319,7 @@
         return;
       }
 
-      if (!input) {
+      if (!input.trim()) {
         container.innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
         return;
       }
@@ -271,9 +350,6 @@
     }
 
     document.getElementById('searchBtn').addEventListener('click', renderResults);
-    document.getElementById('letters').addEventListener('keydown', function(e) {
-      if (e.key === 'Enter') renderResults();
-    });
   </script>
 </body>
 </html>
