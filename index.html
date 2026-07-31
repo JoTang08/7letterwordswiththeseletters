@@ -96,23 +96,28 @@
     .hint { font-size: 0.875rem; color: #94a3b8; margin-bottom: 2rem; text-align: center; }
     .results h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #334155; }
     .word-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
-    .word-tag { background: #eef2ff; color: #4338ca; padding: 0.5rem 0.75rem; border-radius: 8px; font-size: 1.05rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.35rem; }
+    .word-tag { background: #eef2ff; color: #4338ca; padding: 0.4rem 0.6rem; border-radius: 8px; font-size: 1.05rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; }
     .word-tag .word-text { cursor: default; }
+    .word-score { font-size: 0.7rem; font-weight: 700; color: #6366f1; background: #e0e7ff; border-radius: 4px; padding: 1px 5px; letter-spacing: 0.02em; }
+    .word-freq { font-size: 0.68rem; font-weight: 600; border-radius: 4px; padding: 1px 5px; }
+    .word-freq.common  { background: #dcfce7; color: #16a34a; }
+    .word-freq.uncommon{ background: #fef9c3; color: #a16207; }
+    .word-freq.rare    { background: #f1f5f9; color: #94a3b8; }
     .word-btn { background: none; border: none; cursor: pointer; padding: 0 2px; line-height: 1; color: #a5b4fc; border-radius: 4px; transition: color 0.15s, background 0.15s; display: flex; align-items: center; }
     .word-btn:hover { color: #4338ca; background: #c7d2fe; }
     .copy-btn { font-size: 0.85rem; }
-    .def-btn { font-size: 0.85rem; font-weight: 700; }
+    .def-btn { font-size: 0.78rem; font-weight: 700; border: 1.5px solid #c7d2fe; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0; color: #818cf8; }
+    .def-btn:hover { background: #c7d2fe; color: #4338ca; border-color: #a5b4fc; }
     .copy-btn.copied { color: #16a34a; }
     .empty { color: #94a3b8; font-size: 1rem; text-align: center; padding: 2rem 0; }
     .def-popup {
       position: fixed; z-index: 999;
       background: #1e293b; color: #f1f5f9;
-      padding: 0.75rem 1rem; border-radius: 10px;
-      font-size: 0.9rem; line-height: 1.5;
-      max-width: 280px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      padding: 0.65rem 0.9rem; border-radius: 10px;
+      font-size: 0.875rem; line-height: 1.5;
+      max-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
       pointer-events: auto;
     }
-    .def-popup strong { color: #a5b4fc; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; }
     .def-popup .def-loading { color: #94a3b8; font-style: italic; }
 .info-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
     .info-section h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #0f172a; }
@@ -334,7 +339,22 @@
       return [...matches].sort();
     }
 
-    function renderResults() {
+    function buildWordList(words) {
+      let html = '<div class="word-list">';
+      words.forEach(w => {
+        const score = scrabbleScore(w);
+        html += '<span class="word-tag" data-word="' + w + '">'
+          + '<span class="word-text">' + w + '</span>'
+          + '<span class="word-score">' + score + 'pts</span>'
+          + '<span class="word-freq ' + freqClass(w) + '">' + freqLabel(w) + '</span>'
+          + '<button class="word-btn copy-btn" title="Copy" data-word="' + w + '">⧉</button>'
+          + '<button class="word-btn def-btn" title="Definition" data-word="' + w + '">?</button>'
+          + '</span>';
+      });
+      return html + '</div>';
+    }
+
+    async function renderResults() {
       const input = getLettersInput();
       const container = document.getElementById('results');
 
@@ -342,12 +362,10 @@
         container.innerHTML = '<div class="empty">Word list is still loading, please wait…</div>';
         return;
       }
-
       if (!input.trim()) {
         container.innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
         return;
       }
-
       const clean = input.replace(/[^A-Za-z?]/g, '');
       if (clean.length === 0) {
         container.innerHTML = '<div class="empty">Please enter at least one letter</div>';
@@ -356,28 +374,69 @@
 
       const sevenMatches = matchWords(clean);
 
-      let html = '';
-
-      if (sevenMatches.length > 0) {
-        html += '<h2>7-Letter Words (' + sevenMatches.length + ' found)</h2>';
-        html += '<div class="word-list">';
-        sevenMatches.forEach(w => {
-          html += '<span class="word-tag">'
-            + '<span class="word-text">' + w + '</span>'
-            + '<button class="word-btn copy-btn" title="Copy" data-word="' + w + '">⧉</button>'
-            + '<button class="word-btn def-btn" title="Definition" data-word="' + w + '">?</button>'
-            + '</span>';
-        });
-        html += '</div>';
-      } else {
-        html += '<h2>7-Letter Words</h2>';
-        html += '<div class="empty">No 7-letter words found. Try different letters or use ? as a wildcard.</div>';
+      if (sevenMatches.length === 0) {
+        container.innerHTML = '<h2>7-Letter Words</h2><div class="empty">No 7-letter words found. Try different letters or use ? as a wildcard.</div>';
+        return;
       }
 
-      container.innerHTML = html;
+      // Render immediately with score; freq badges show as 'Rare' until fetch completes
+      container.innerHTML = '<h2>7-Letter Words (' + sevenMatches.length + ' found)</h2>' + buildWordList(sevenMatches);
+
+      // Fetch frequencies in background, then refresh badges only
+      await fetchFrequencies(sevenMatches);
+      document.querySelectorAll('#results .word-freq').forEach(el => {
+        const word = el.closest('.word-tag').dataset.word;
+        el.className = 'word-freq ' + freqClass(word);
+        el.textContent = freqLabel(word);
+      });
     }
 
     document.getElementById('searchBtn').addEventListener('click', renderResults);
+
+    // Scrabble letter values
+    const SCRABBLE_VALUES = {a:1,e:1,i:1,o:1,u:1,l:1,n:1,s:1,t:1,r:1,d:2,g:2,b:3,c:3,m:3,p:3,f:4,h:4,v:4,w:4,y:4,k:5,j:8,x:8,q:10,z:10};
+    function scrabbleScore(word) {
+      return word.toLowerCase().split('').reduce((s, c) => s + (SCRABBLE_VALUES[c] || 0), 0);
+    }
+
+    // Frequency cache: word → 'common' | 'uncommon' | 'rare'
+    const freqCache = {};
+
+    function freqClass(word) { return freqCache[word.toLowerCase()] || 'rare'; }
+    function freqLabel(word) {
+      const c = freqClass(word);
+      return c === 'common' ? 'Common' : c === 'uncommon' ? 'Uncommon' : 'Rare';
+    }
+
+    async function fetchFrequencies(words) {
+      // Datamuse md=f returns a "tags" array like ["f:23.45"] where the number is
+      // log10(occurrences per million). Thresholds: ≥3 = common, ≥1 = uncommon, else rare.
+      const unknown = words.filter(w => freqCache[w] === undefined);
+      if (!unknown.length) return;
+      // Batch: Datamuse supports up to ~1 request per word; send in parallel chunks of 20
+      const chunks = [];
+      for (let i = 0; i < unknown.length; i += 20) chunks.push(unknown.slice(i, i + 20));
+      await Promise.all(chunks.map(async chunk => {
+        try {
+          const res = await fetch('https://api.datamuse.com/words?sp=' + chunk.join('|') + '&md=f&max=' + chunk.length);
+          if (!res.ok) return;
+          const data = await res.json();
+          // Mark returned words
+          const found = new Set();
+          data.forEach(item => {
+            const w = item.word.toLowerCase();
+            found.add(w);
+            const ftag = (item.tags || []).find(t => t.startsWith('f:'));
+            const score = ftag ? parseFloat(ftag.slice(2)) : 0;
+            freqCache[w] = score >= 5 ? 'common' : score >= 0.8 ? 'uncommon' : 'rare';
+          });
+          // Words not returned by Datamuse are rare
+          chunk.forEach(w => { if (!found.has(w)) freqCache[w] = 'rare'; });
+        } catch {
+          chunk.forEach(w => { freqCache[w] = 'rare'; });
+        }
+      }));
+    }
 
     // Definition cache
     const defCache = {};
@@ -467,9 +526,27 @@
     }
 
     let activeDefBtn = null;
+    let hoverTimer = null;
+
+    async function triggerDefinition(defBtn) {
+      activeDefBtn = defBtn;
+      const word = defBtn.dataset.word;
+      showPopup('<span class="def-loading">Loading…</span>', defBtn);
+      const def = await fetchDefinition(word);
+      if (activeDefBtn !== defBtn) return;
+      if (def) {
+        showPopup('<strong style="display:block;margin-bottom:4px;font-size:1rem;color:#e0e7ff">'
+          + word.toUpperCase() + '</strong>' + def, defBtn);
+      } else {
+        showPopup('<strong style="display:block;margin-bottom:4px;font-size:1rem;color:#e0e7ff">'
+          + word.toUpperCase() + '</strong>'
+          + '<span style="color:#94a3b8;font-size:0.85em">No definition found in our sources.</span><br>'
+          + '<a href="https://www.collinsdictionary.com/dictionary/english/' + word
+          + '" target="_blank" rel="noopener" style="color:#a5b4fc;font-size:0.85em;">Look up on Collins Dictionary ↗</a>', defBtn);
+      }
+    }
 
     document.getElementById('results').addEventListener('click', async function(e) {
-      // Copy button
       const copyBtn = e.target.closest('.copy-btn');
       if (copyBtn) {
         const word = copyBtn.dataset.word;
@@ -479,28 +556,21 @@
         setTimeout(() => { copyBtn.classList.remove('copied'); copyBtn.textContent = '⧉'; }, 1500);
         return;
       }
-
-      // Definition button
       const defBtn = e.target.closest('.def-btn');
       if (defBtn) {
         if (activeDefBtn === defBtn && popup.style.display !== 'none') {
           hidePopup(); activeDefBtn = null; return;
         }
-        activeDefBtn = defBtn;
-        const word = defBtn.dataset.word;
-        showPopup('<span class="def-loading">Loading…</span>', defBtn);
-        const def = await fetchDefinition(word);
-        if (activeDefBtn !== defBtn) return; // user clicked elsewhere
-        if (def) {
-          showPopup('<strong style="display:block;margin-bottom:4px;font-size:1rem;color:#e0e7ff">' + word.toUpperCase() + '</strong>' + def, defBtn);
-        } else {
-          showPopup('<strong style="display:block;margin-bottom:4px;font-size:1rem;color:#e0e7ff">' + word.toUpperCase() + '</strong>'
-            + '<span style="color:#94a3b8;font-size:0.85em">No definition found in our sources.</span><br>'
-            + '<a href="https://www.collinsdictionary.com/dictionary/english/' + word + '" target="_blank" rel="noopener" '
-            + 'style="color:#a5b4fc;font-size:0.85em;pointer-events:auto;">Look up on Collins Dictionary ↗</a>', defBtn);
-        }
+        triggerDefinition(defBtn);
         return;
       }
+    });
+
+    document.getElementById('results').addEventListener('mouseover', function(e) {
+      const defBtn = e.target.closest('.def-btn');
+      if (!defBtn) return;
+      clearTimeout(hoverTimer);
+      hoverTimer = setTimeout(() => triggerDefinition(defBtn), 300);
     });
 
     document.addEventListener('click', function(e) {
