@@ -648,6 +648,10 @@
         hidePopup(); activeDefBtn = null;
       }
     });
+
+    window.addEventListener('scroll', function() {
+      hidePopup(); activeDefBtn = null;
+    }, { passive: true });
   </script>
 </body>
 </html>
