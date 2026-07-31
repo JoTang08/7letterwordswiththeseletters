@@ -125,6 +125,7 @@
     .info-section ul { padding-left: 1.25rem; margin-bottom: 1rem; }
     .word-source-badge { display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.8rem; color: #64748b; margin-bottom: 1.5rem; }
     .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
+    .results-legend { font-size: 0.78rem; color: #94a3b8; margin-bottom: 0.75rem; }
     footer { text-align: center; margin-top: 3rem; padding: 1.5rem 0; color: #94a3b8; font-size: 0.85rem; border-top: 1px solid #e2e8f0; }
     footer a { color: #6366f1; text-decoration: none; }
     @media (max-width: 500px) {
@@ -345,7 +346,7 @@
         const score = scrabbleScore(w);
         html += '<span class="word-tag" data-word="' + w + '">'
           + '<span class="word-text">' + w + '</span>'
-          + '<span class="word-score">' + score + 'pts</span>'
+          + '<span class="word-score" title="Scrabble point value">&#9733;' + score + '</span>'
           + '<span class="word-freq ' + freqClass(w) + '">' + freqLabel(w) + '</span>'
           + '<button class="word-btn copy-btn" title="Copy" data-word="' + w + '">⧉</button>'
           + '<button class="word-btn def-btn" title="Definition" data-word="' + w + '">?</button>'
@@ -380,7 +381,9 @@
       }
 
       // Render immediately with score; freq badges show as 'Rare' until fetch completes
-      container.innerHTML = '<h2>7-Letter Words (' + sevenMatches.length + ' found)</h2>' + buildWordList(sevenMatches);
+      container.innerHTML = '<h2>7-Letter Words (' + sevenMatches.length + ' found)</h2>'
+        + '<p class="results-legend">&#9733; = Scrabble points &nbsp;·&nbsp; hover <span class="def-btn" style="display:inline-flex;pointer-events:none">?</span> for definition</p>'
+        + buildWordList(sevenMatches);
 
       // Fetch frequencies in background, then refresh badges only
       await fetchFrequencies(sevenMatches);
