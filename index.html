@@ -111,7 +111,7 @@
     .copy-btn.copied { color: #16a34a; }
     .empty { color: #94a3b8; font-size: 1rem; text-align: center; padding: 2rem 0; }
     .def-popup {
-      position: fixed; z-index: 999;
+      position: fixed; z-index: 9999;
       background: #1e293b; color: #f1f5f9;
       padding: 0.65rem 0.9rem; border-radius: 10px;
       font-size: 0.875rem; line-height: 1.5;
@@ -454,12 +454,19 @@
 
     function showPopup(content, anchorEl) {
       popup.innerHTML = content;
+      // Use fixed positioning relative to viewport, not page
+      popup.style.position = 'fixed';
+      popup.style.top = '-9999px';
+      popup.style.left = '-9999px';
       popup.style.display = 'block';
+      // Read anchor and popup dimensions after layout
       const rect = anchorEl.getBoundingClientRect();
-      let top = rect.bottom + window.scrollY + 6;
-      let left = rect.left + window.scrollX;
-      // keep within viewport
       const pw = popup.offsetWidth;
+      const ph = popup.offsetHeight;
+      let top = rect.bottom + 6;
+      let left = rect.left;
+      // Flip above if not enough space below
+      if (top + ph > window.innerHeight - 8) top = rect.top - ph - 6;
       if (left + pw > window.innerWidth - 8) left = window.innerWidth - pw - 8;
       if (left < 8) left = 8;
       popup.style.top = top + 'px';
