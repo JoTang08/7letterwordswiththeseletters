@@ -273,6 +273,8 @@
         });
         wordsReady = true;
         document.getElementById('searchBtn').textContent = 'Find Words';
+        const q = new URLSearchParams(location.search).get('q');
+        if (q) searchPreset(q);
       })
       .catch(() => {
         document.getElementById('searchBtn').textContent = 'Find Words';
@@ -332,6 +334,7 @@
       tiles.forEach(t => { t.value = ''; t.classList.remove('filled', 'wildcard'); });
       document.getElementById('results').innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
       document.getElementById('resetBtn').classList.remove('visible');
+      history.replaceState(null, '', location.pathname);
       tiles[0].focus();
     });
 
@@ -405,6 +408,7 @@
       }
 
       addRecentSearch(clean);
+      history.replaceState(null, '', '?q=' + encodeURIComponent(clean.toUpperCase()));
 
       // Render immediately with score; freq badges show as 'Rare' until fetch completes
       container.innerHTML = '<h2>7-Letter Words (' + sevenMatches.length + ' found)</h2>'
