@@ -108,6 +108,8 @@
     header h1 { font-size: 1.75rem; color: #0f172a; margin-bottom: 0.5rem; }
     header p { color: #64748b; font-size: 1rem; }
 
+    .tile-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
+    .tile-label { font-size: 0.65rem; color: #cbd5e1; font-weight: 500; letter-spacing: 0.03em; user-select: none; }
     .tiles-row { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem; }
     .tile-input {
       width: 68px; height: 68px;
@@ -233,13 +235,13 @@
     </header>
 
     <div class="tiles-row" id="tilesRow">
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text" autofocus>
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
-      <input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text">
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text" autofocus><span class="tile-label">1st</span></div>
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">2nd</span></div>
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">3rd</span></div>
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">4th</span></div>
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">5th</span></div>
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">6th</span></div>
+      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">7th</span></div>
     </div>
     <div class="search-btn-row">
       <button id="searchBtn">Find Words</button>
