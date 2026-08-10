@@ -1,2 +1,6 @@
 .DS_Store
 words_alpha.txt
+
+.next/
+out/
+node_modules/

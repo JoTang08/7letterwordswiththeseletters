@@ -1,0 +1,75 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e40af"/>
+      <stop offset="100%" style="stop-color:#2563eb"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Decorative tile grid (background) -->
+  <g opacity="0.08">
+    <rect x="40" y="40" width="80" height="80" rx="10" fill="white"/>
+    <rect x="140" y="40" width="80" height="80" rx="10" fill="white"/>
+    <rect x="240" y="40" width="80" height="80" rx="10" fill="white"/>
+    <rect x="340" y="40" width="80" height="80" rx="10" fill="white"/>
+    <rect x="40" y="140" width="80" height="80" rx="10" fill="white"/>
+    <rect x="140" y="140" width="80" height="80" rx="10" fill="white"/>
+    <rect x="240" y="140" width="80" height="80" rx="10" fill="white"/>
+    <rect x="1000" y="420" width="80" height="80" rx="10" fill="white"/>
+    <rect x="1100" y="420" width="80" height="80" rx="10" fill="white"/>
+    <rect x="1000" y="520" width="80" height="80" rx="10" fill="white"/>
+    <rect x="1100" y="520" width="80" height="80" rx="10" fill="white"/>
+  </g>
+
+  <!-- Letter tiles (main visual) -->
+  <!-- S -->
+  <rect x="130" y="240" width="110" height="110" rx="14" fill="white"/>
+  <text x="185" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#2563eb">S</text>
+  <text x="222" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#94a3b8">1</text>
+
+  <!-- C -->
+  <rect x="260" y="240" width="110" height="110" rx="14" fill="white"/>
+  <text x="315" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#2563eb">C</text>
+  <text x="352" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#94a3b8">3</text>
+
+  <!-- R -->
+  <rect x="390" y="240" width="110" height="110" rx="14" fill="white"/>
+  <text x="445" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#2563eb">R</text>
+  <text x="482" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#94a3b8">1</text>
+
+  <!-- A -->
+  <rect x="520" y="240" width="110" height="110" rx="14" fill="white"/>
+  <text x="575" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="#2563eb">A</text>
+  <text x="612" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="#94a3b8">1</text>
+
+  <!-- B -->
+  <rect x="650" y="240" width="110" height="110" rx="14" fill="#fbbf24"/>
+  <text x="705" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="white">B</text>
+  <text x="742" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="white">3</text>
+
+  <!-- L -->
+  <rect x="780" y="240" width="110" height="110" rx="14" fill="#fbbf24"/>
+  <text x="835" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="white">L</text>
+  <text x="872" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="white">1</text>
+
+  <!-- E -->
+  <rect x="910" y="240" width="110" height="110" rx="14" fill="#fbbf24"/>
+  <text x="965" y="325" font-family="Georgia, serif" font-size="72" font-weight="bold" text-anchor="middle" fill="white">E</text>
+  <text x="1002" y="338" font-family="Arial, sans-serif" font-size="18" text-anchor="middle" fill="white">1</text>
+
+  <!-- Arrow -->
+  <text x="600" y="430" font-family="Arial, sans-serif" font-size="36" text-anchor="middle" fill="white" opacity="0.6">↓</text>
+
+  <!-- Result word -->
+  <text x="600" y="500" font-family="Georgia, serif" font-size="52" font-weight="bold" text-anchor="middle" fill="white" letter-spacing="8">SCARBLE</text>
+
+  <!-- Main title -->
+  <text x="600" y="100" font-family="-apple-system, Arial, sans-serif" font-size="42" font-weight="bold" text-anchor="middle" fill="white">7 Letter Words With These Letters</text>
+  <text x="600" y="155" font-family="-apple-system, Arial, sans-serif" font-size="26" text-anchor="middle" fill="white" opacity="0.8">Find Words Instantly — Free Word Unscrambler</text>
+
+  <!-- Bottom tag -->
+  <text x="600" y="590" font-family="-apple-system, Arial, sans-serif" font-size="20" text-anchor="middle" fill="white" opacity="0.5">7letterwordswiththeseletters.com</text>
+</svg>

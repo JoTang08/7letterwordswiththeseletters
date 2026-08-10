@@ -64,171 +64,502 @@
     }
   ]
   </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,wght@0,400;0,500;1,400;1,500&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
+    :root {
+      --bg:          #0C0B09;
+      --bg-alt:      #0F0E0C;
+      --card:        #161410;
+      --secondary:   #1E1C18;
+      --gold:        #C8A96E;
+      --gold-accent: rgba(200,169,110,0.1);
+      --gold-dim:    rgba(200,169,110,0.5);
+      --gold-glow:   rgba(200,169,110,0.18);
+      --gold-fill:   rgba(200,169,110,0.07);
+      --gold-fill2:  rgba(200,169,110,0.05);
+      --muted:       #7A7267;
+      --fg:          #EDE8DF;
+      --sidebar-bg:  #0F0E0C;
+      --border:      rgba(255,255,255,0.06);
+      --border-sb:   rgba(255,255,255,0.059);
+      --border-md:   rgba(255,255,255,0.08);
+      --border-lg:   rgba(255,255,255,0.1);
+      --glass:       rgba(255,255,255,0.025);
+      --glass2:      rgba(255,255,255,0.04);
+      --input-bg:    #1A1814;
+      --radius:      0.75rem;
+      --font-serif: 'Bodoni Moda', Georgia, serif;
+      --font-mono:  'DM Mono', 'Courier New', monospace;
+      --font-sans:  'DM Sans', system-ui, sans-serif;
+    }
+
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8fafc; color: #1e293b; line-height: 1.6; display: flex; min-height: 100vh; }
+
+    body {
+      font-family: var(--font-sans);
+      background: linear-gradient(180deg, var(--bg-alt) 0%, var(--bg) 100%);
+      color: var(--fg);
+      line-height: 1.6;
+      display: flex;
+      min-height: 100vh;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 40% at 50% 0%, rgba(200,169,110,0.07) 0%, transparent 70%);
+      z-index: 0;
+    }
 
     /* ── Sidebar ── */
     .sidebar {
-      width: 160px; flex-shrink: 0;
+      width: 112px; flex-shrink: 0;
       position: sticky; top: 0; height: 100vh;
-      background: #fff; border-right: 1px solid #e2e8f0;
+      background: var(--sidebar-bg);
+      border-right: 1px solid var(--border-sb);
       display: flex; flex-direction: column;
-      padding: 2rem 1rem;
-      gap: 2rem;
+      padding: 2.5rem 0;
+      z-index: 10;
     }
-    .sidebar-logo { font-size: 0.75rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.08em; }
-    .sidebar-label { font-size: 0.7rem; font-weight: 600; color: #cbd5e1; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 0.5rem; }
-    .sidebar-nav { display: flex; flex-direction: column; gap: 0.25rem; }
+    .sidebar-logo {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem; font-weight: 500;
+      color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.25em;
+      padding: 0 1.25rem; margin-bottom: 1.25rem;
+    }
+    .sidebar-label { display: none; }
+    .sidebar-nav { display: flex; flex-direction: column; flex: 1; }
     .nav-link {
-      display: flex; align-items: center; gap: 0.6rem;
-      padding: 0.5rem 0.75rem; border-radius: 8px;
-      font-size: 0.9rem; font-weight: 500; color: #64748b;
+      position: relative;
+      display: flex; align-items: center; gap: 0.5rem;
+      padding: 0.625rem 1.25rem;
+      font-size: 0.875rem; font-weight: 500;
+      color: var(--muted);
       text-decoration: none;
-      transition: background 0.15s, color 0.15s;
+      transition: color 0.2s;
     }
-    .nav-link:hover { background: #f1f5f9; color: #1e293b; }
-    .nav-link.active { background: #eef2ff; color: #4338ca; font-weight: 600; }
+    .nav-link:hover { color: var(--fg); }
+    .nav-link.active { color: var(--gold); }
+    .nav-link.active::before {
+      content: '';
+      position: absolute; left: 0; top: 50%; transform: translateY(-50%);
+      width: 2px; height: 20px; border-radius: 0 2px 2px 0;
+      background: var(--gold);
+    }
     .nav-link .nav-num {
-      width: 24px; height: 24px; border-radius: 6px;
-      display: flex; align-items: center; justify-content: center;
-      font-size: 0.85rem; font-weight: 700;
-      background: #f1f5f9; color: #64748b;
-      flex-shrink: 0;
+      font-family: var(--font-mono);
+      font-size: 0.875rem; font-weight: 500;
+      min-width: 1.25rem;
     }
-    .nav-link.active .nav-num { background: #6366f1; color: #fff; }
-    .sidebar-footer { margin-top: auto; font-size: 0.7rem; color: #cbd5e1; line-height: 1.6; }
-    .sidebar-footer a { color: #94a3b8; text-decoration: none; }
-    .sidebar-footer a:hover { color: #6366f1; }
+    .nav-link .nav-label {
+      font-size: 0.6875rem; opacity: 0.6;
+    }
+    .nav-link.active .nav-label { opacity: 0.9; }
+    .sidebar-footer {
+      margin-top: auto;
+      padding: 0 1.25rem;
+      display: flex; flex-direction: column; gap: 0.5rem;
+    }
+    .sidebar-footer a {
+      font-size: 0.625rem; color: var(--muted);
+      text-decoration: none; transition: color 0.2s;
+    }
+    .sidebar-footer a:hover { color: var(--fg); }
 
     /* ── Main ── */
-    .main { flex: 1; min-width: 0; }
-    .container { max-width: 680px; margin: 0 auto; padding: 2rem 1.5rem; }
-    header { text-align: center; margin-bottom: 2rem; }
-    header h1 { font-size: 1.75rem; color: #0f172a; margin-bottom: 0.5rem; }
-    header p { color: #64748b; font-size: 1rem; }
+    .main { flex: 1; min-width: 0; position: relative; z-index: 1; overflow-y: auto; }
+    .container { max-width: 672px; margin: 0 auto; padding: 3rem 1.25rem 4rem; }
 
-    .tile-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.3rem; }
-    .tile-label { font-size: 0.65rem; color: #cbd5e1; font-weight: 500; letter-spacing: 0.03em; user-select: none; }
-    .tiles-row { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1.25rem; }
-    .tile-input {
-      width: 68px; height: 68px;
-      font-size: 1.75rem; font-weight: 700;
-      text-align: center; text-transform: uppercase;
-      border: 2px solid #e2e8f0; border-radius: 12px;
-      outline: none; background: #fff; color: #0f172a;
-      transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
-      caret-color: transparent;
+    /* ── Header ── */
+    header { text-align: center; margin-bottom: 3rem; }
+    .header-eyebrow {
+      font-family: var(--font-mono);
+      font-size: 0.625rem; font-weight: 500;
+      color: var(--gold);
+      text-transform: uppercase; letter-spacing: 0.35em;
+      margin-bottom: 1.25rem;
+      display: block;
     }
-    .tile-input:focus { border-color: #6366f1; box-shadow: 0 0 0 3px rgba(99,102,241,0.15); }
-    .tile-input.filled { background: #eef2ff; border-color: #a5b4fc; color: #3730a3; }
-    .tile-input.wildcard { background: #fef9c3; border-color: #fbbf24; color: #92400e; }
-    .search-btn-row { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 1rem; }
-    .search-btn-row button { padding: 0.875rem 2.5rem; font-size: 1.05rem; font-weight: 600; background: #6366f1; color: #fff; border: none; border-radius: 12px; cursor: pointer; transition: background 0.2s; }
-    .search-btn-row button:hover { background: #4f46e5; }
-    .reset-btn { padding: 0.875rem 1.5rem; font-size: 1.05rem; font-weight: 600; background: transparent; color: #94a3b8; border: 2px solid #e2e8f0; border-radius: 12px; cursor: pointer; transition: color 0.2s, border-color 0.2s; display: none; }
-    .reset-btn:hover { color: #ef4444; border-color: #ef4444; }
+    header h1 {
+      font-family: var(--font-serif);
+      font-size: clamp(2rem, 5vw, 3rem); /* text-5xl */
+      font-weight: 300; line-height: 1;
+      color: var(--fg);
+      margin-bottom: 0.5rem;
+    }
+    header h2 {
+      font-family: var(--font-serif);
+      font-size: clamp(1.5rem, 3.5vw, 2rem); /* text-3xl */
+      font-weight: 300; line-height: 1;
+      font-style: italic;
+      color: var(--muted);
+      margin-bottom: 1.25rem;
+    }
+    header p {
+      font-size: 0.875rem;
+      color: var(--muted);
+    }
+
+    /* ── Tiles ── */
+    .tile-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.375rem; }
+    .tile-label {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem; color: var(--muted);
+      font-weight: 400; user-select: none;
+    }
+    .tiles-row { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 2rem; flex-wrap: wrap; }
+    .tile-outer {
+      position: relative; width: 52px; height: 62px;
+      transition: all 0.2s;
+    }
+    .tile-bg {
+      position: absolute; inset: 0; border-radius: var(--radius);
+      background: var(--glass);
+      box-shadow: 0 0 0 1px var(--border-md);
+      transition: all 0.2s;
+    }
+    .tile-input {
+      position: absolute; inset: 0; width: 100%; height: 100%;
+      font-family: var(--font-serif);
+      font-size: 1.5rem; font-weight: 400;
+      text-align: center; text-transform: uppercase;
+      background: transparent; color: var(--fg);
+      border: none; outline: none;
+      caret-color: var(--gold);
+      border-radius: var(--radius);
+      transition: color 0.2s;
+      z-index: 1;
+    }
+    .tile-outer.focused .tile-bg {
+      box-shadow: 0 0 0 1.5px var(--gold), 0 0 24px var(--gold-glow);
+    }
+    .tile-outer.focused.filled .tile-bg,
+    .tile-outer.focused.wildcard .tile-bg {
+      box-shadow: 0 0 0 1.5px var(--gold), 0 0 24px var(--gold-glow);
+    }
+    .tile-outer.filled .tile-bg {
+      background: var(--gold-fill);
+      box-shadow: 0 0 0 1px rgba(200,169,110,0.4);
+    }
+    .tile-outer.wildcard .tile-bg {
+      background: rgba(200,169,110,0.1);
+      box-shadow: 0 0 0 1.5px var(--gold-dim);
+    }
+
+    /* ── Buttons ── */
+    .search-btn-row { display: flex; gap: 0.625rem; margin-bottom: 1rem; }
+    #searchBtn {
+      flex: 1;
+      padding: 1rem 2rem;
+      font-family: var(--font-mono);
+      font-size: 0.875rem; font-weight: 600;
+      text-transform: uppercase; letter-spacing: 0.1em;
+      background: var(--gold); color: var(--bg);
+      border: none; border-radius: var(--radius);
+      cursor: pointer;
+      transition: opacity 0.3s, background 0.3s;
+    }
+    #searchBtn:hover { opacity: 0.88; }
+    #searchBtn.loading-state {
+      background: rgba(200,169,110,0.18);
+      color: var(--muted);
+      cursor: default;
+    }
+    .reset-btn {
+      padding: 1rem 1.25rem;
+      font-family: var(--font-sans);
+      font-size: 0.875rem;
+      background: transparent; color: var(--muted);
+      border: 1px solid var(--border-md);
+      border-radius: var(--radius); cursor: pointer;
+      transition: color 0.2s, border-color 0.2s;
+      display: none;
+    }
+    .reset-btn:hover { color: var(--fg); border-color: rgba(200,169,110,0.3); }
     .reset-btn.visible { display: block; }
-    .hint { font-size: 0.875rem; color: #94a3b8; margin-bottom: 2rem; text-align: center; }
-    .results h2 { font-size: 1.2rem; margin-bottom: 1rem; color: #334155; }
-    .word-list { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
-    .word-tag { background: #eef2ff; color: #4338ca; padding: 0.4rem 0.6rem; border-radius: 8px; font-size: 1.05rem; font-weight: 500; display: inline-flex; align-items: center; gap: 0.3rem; }
-    .word-tag .word-text { cursor: default; }
-    .word-score { font-size: 0.7rem; font-weight: 700; color: #6366f1; background: #e0e7ff; border-radius: 4px; padding: 1px 5px; letter-spacing: 0.02em; }
-    .word-freq { font-size: 0.68rem; font-weight: 600; border-radius: 4px; padding: 1px 5px; }
-    .word-freq.common  { background: #dcfce7; color: #16a34a; }
-    .word-freq.uncommon{ background: #fef9c3; color: #a16207; }
-    .word-freq.rare    { background: #f1f5f9; color: #94a3b8; }
-    .word-btn { background: none; border: none; cursor: pointer; padding: 0 2px; line-height: 1; color: #a5b4fc; border-radius: 4px; transition: color 0.15s, background 0.15s; display: flex; align-items: center; }
-    .word-btn:hover { color: #4338ca; background: #c7d2fe; }
-    .copy-btn { font-size: 0.85rem; }
-    .def-btn { font-size: 0.78rem; font-weight: 700; border: 1.5px solid #c7d2fe; border-radius: 50%; width: 18px; height: 18px; display: flex; align-items: center; justify-content: center; padding: 0; color: #818cf8; }
-    .def-btn:hover { background: #c7d2fe; color: #4338ca; border-color: #a5b4fc; }
-    .copy-btn.copied { color: #16a34a; }
-    .empty { color: #94a3b8; font-size: 1rem; text-align: center; padding: 2rem 0; }
+
+    /* ── Hint ── */
+    .hint {
+      font-size: 0.75rem; color: var(--muted);
+      text-align: center; margin-bottom: 2.5rem;
+    }
+    .hint kbd {
+      font-family: var(--font-mono);
+      font-size: 0.625rem;
+      border: 1px solid var(--border-lg);
+      background: var(--glass2);
+      border-radius: 4px;
+      padding: 1px 6px;
+    }
+
+    /* ── Word source badge ── */
+    .word-source-badge {
+      display: none; /* removed, info now in header eyebrow */
+    }
+    .badge-dot { display: none; }
+
+    /* ── Results ── */
+    .results-header {
+      display: flex; align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 1.5rem;
+    }
+    .results-count {
+      font-family: var(--font-mono);
+      font-size: 0.75rem; font-weight: 500;
+      color: var(--gold);
+      text-transform: uppercase; letter-spacing: 0.2em;
+    }
+    .results-meta {
+      font-size: 0.75rem; color: var(--muted);
+    }
+    .results-legend {
+      font-size: 0.75rem; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+
+    /* Word grid */
+    .word-list { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.75rem; margin-bottom: 1.5rem; }
+    @media (min-width: 480px) { .word-list { grid-template-columns: repeat(3, 1fr); } }
+
+    .word-tag {
+      padding: 1rem;
+      background: var(--glass);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: var(--radius);
+      display: flex; flex-direction: column; gap: 0.5rem;
+      cursor: pointer;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .word-tag:hover {
+      background: var(--gold-fill2);
+      border-color: rgba(200,169,110,0.35);
+    }
+    .word-tag-top { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 0.5rem; }
+    .word-text {
+      font-family: var(--font-serif);
+      font-size: 1.25rem; font-weight: 500;
+      color: var(--fg); cursor: default;
+      transition: color 0.2s;
+    }
+    .word-tag:hover .word-text { color: var(--fg); }
+    .word-score {
+      font-family: var(--font-mono);
+      font-size: 0.625rem; color: var(--gold);
+      opacity: 0.8; margin-top: 0.375rem; margin-left: 0.5rem;
+      flex-shrink: 0;
+    }
+    .word-def {
+      font-size: 0.75rem; line-height: 1.5;
+      color: var(--muted);
+    }
+    .word-letter-row {
+      display: flex; gap: 1px; margin-top: 0.25rem;
+    }
+    .word-letter {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem;
+      color: var(--gold-dim);
+    }
+    .word-freq {
+      font-family: var(--font-mono);
+      font-size: 0.5625rem; font-weight: 500;
+    }
+    .word-freq.common   { color: var(--gold); opacity: 0.9; }
+    .word-freq.uncommon { color: var(--muted); }
+    .word-freq.rare     { color: var(--muted); opacity: 0.5; }
+    .word-actions { display: flex; gap: 0.25rem; }
+    .word-btn {
+      background: none; border: none; cursor: pointer;
+      padding: 2px 4px; line-height: 1;
+      color: var(--muted); border-radius: 4px;
+      transition: color 0.15s, background 0.15s;
+      display: flex; align-items: center;
+    }
+    .word-btn:hover { color: var(--gold); background: var(--gold-fill); }
+    .copy-btn { font-size: 0.8rem; }
+    .copy-btn.copied { color: var(--gold); }
+    .def-btn {
+      font-family: var(--font-mono);
+      font-size: 0.6rem; font-weight: 500;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 50%; width: 16px; height: 16px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0; color: var(--muted);
+    }
+    .def-btn:hover { background: var(--gold-fill); color: var(--gold); border-color: rgba(200,169,110,0.4); }
+
+    .empty {
+      font-size: 0.875rem; color: var(--muted);
+      text-align: center; padding: 2.5rem 0;
+    }
+
+    /* ── Definition popup ── */
     .def-popup {
       position: fixed; z-index: 9999;
-      background: #1e293b; color: #f1f5f9;
-      padding: 0.65rem 0.9rem; border-radius: 10px;
+      background: #1a1915; color: var(--fg);
+      padding: 0.75rem 1rem; border-radius: 10px;
       font-size: 0.875rem; line-height: 1.5;
-      max-width: 260px; box-shadow: 0 8px 24px rgba(0,0,0,0.25);
+      max-width: 260px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(200,169,110,0.15);
       pointer-events: auto;
     }
-    .def-popup .def-loading { color: #94a3b8; font-style: italic; }
-    .tool-screenshot { display: block; width: 100%; max-width: 640px; height: auto; margin: 0 auto 2rem; border-radius: 12px; border: 1px solid #e2e8f0; box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
-    .info-section { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid #e2e8f0; }
-    .info-section h2 { font-size: 1.25rem; margin-bottom: 1rem; color: #0f172a; }
-    .info-section p, .info-section li { color: #475569; font-size: 0.95rem; margin-bottom: 0.5rem; }
-    .info-section ul { padding-left: 1.25rem; margin-bottom: 1rem; }
-    .word-source-badge { display: flex; align-items: center; justify-content: center; gap: 0.5rem; font-size: 0.8rem; color: #64748b; margin-bottom: 1.5rem; }
-    .badge-dot { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; flex-shrink: 0; box-shadow: 0 0 0 2px rgba(34,197,94,0.2); }
-    .results-legend { font-size: 0.78rem; color: #94a3b8; margin-bottom: 0.75rem; }
-    .presets { margin-top: 2rem; }
-    .presets-label { font-size: 0.9rem; color: #94a3b8; font-weight: 500; margin-bottom: 0.6rem; }
-    .preset-btn { background: #fff; border: 1.5px solid #e2e8f0; border-radius: 8px; padding: 0.4rem 0.75rem; font-size: 0.875rem; color: #475569; cursor: pointer; transition: border-color 0.15s, color 0.15s, background 0.15s; }
-    .preset-btn:hover { border-color: #6366f1; color: #4338ca; background: #eef2ff; }
-    .recent-searches { margin-top: 1.25rem; display: none; }
-    .recent-searches .preset-btn { font-family: monospace; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.05em; }
-    footer { text-align: center; margin-top: 3rem; padding: 1.5rem 0; color: #94a3b8; font-size: 0.85rem; border-top: 1px solid #e2e8f0; }
-    footer a { color: #6366f1; text-decoration: none; }
+    .def-popup .def-loading { color: var(--muted); font-style: italic; }
 
-    /* ── Mobile: sidebar becomes top bar ── */
+    /* ── Screenshot ── */
+    .tool-screenshot {
+      display: block; width: 100%; max-width: 640px;
+      height: auto; margin: 0 auto 2rem;
+      border-radius: 12px;
+      border: 1px solid var(--border-md);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+    }
+
+    /* ── Info sections ── */
+    .info-section {
+      margin-top: 3rem; padding-top: 2rem;
+      border-top: 1px solid var(--border);
+    }
+    .info-section h2 {
+      font-family: var(--font-serif);
+      font-size: 1.375rem; font-weight: 400;
+      color: var(--fg); margin-bottom: 1rem;
+    }
+    .info-section h3 {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem; font-weight: 500;
+      color: var(--gold);
+      text-transform: uppercase; letter-spacing: 0.2em;
+      margin: 1.5rem 0 0.75rem;
+    }
+    .info-section p, .info-section li {
+      color: var(--muted); font-size: 0.9375rem;
+      margin-bottom: 0.5rem; line-height: 1.7;
+    }
+    .info-section a { color: var(--gold); text-decoration: none; }
+    .info-section a:hover { opacity: 0.8; }
+    .info-section ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+    .info-section strong { color: var(--fg); font-weight: 500; }
+    .info-section code {
+      font-family: var(--font-mono);
+      font-size: 0.8125rem;
+      background: var(--glass2);
+      border: 1px solid var(--border-md);
+      border-radius: 4px; padding: 1px 6px;
+      color: var(--gold);
+    }
+
+    /* ── Presets ── */
+    .presets { margin-top: 2rem; }
+    .presets-label {
+      font-family: var(--font-mono);
+      font-size: 0.625rem; color: var(--muted);
+      text-transform: uppercase; letter-spacing: 0.25em;
+      margin-bottom: 1rem;
+    }
+    .preset-btn {
+      background: transparent;
+      border: 1px solid var(--border-md);
+      border-radius: 9999px;
+      padding: 0.375rem 0.875rem;
+      font-size: 0.8125rem; color: var(--muted);
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+      display: inline-flex; align-items: center; gap: 0.5rem;
+    }
+    .preset-btn:hover { border-color: rgba(200,169,110,0.35); color: var(--fg); }
+    .preset-btn .preset-letters {
+      font-family: var(--font-mono);
+      font-size: 0.6875rem; color: var(--gold);
+    }
+    .recent-searches { margin-top: 1.25rem; display: none; }
+    .recent-searches .preset-btn { font-family: var(--font-mono); font-size: 0.875rem; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* ── Footer ── */
+    footer {
+      text-align: center; margin-top: 3rem;
+      padding: 1.5rem 0;
+      color: var(--muted); font-size: 0.8125rem;
+      border-top: 1px solid var(--border);
+    }
+    footer a { color: var(--gold); text-decoration: none; }
+    footer a:hover { opacity: 0.8; }
+
+    /* ── Desktop large ── */
+    @media (min-width: 768px) {
+      header h1 { font-size: 4.5rem; } /* text-7xl */
+      header h2 { font-size: 3rem; }   /* text-5xl */
+      .tiles-row { gap: 0.75rem; }
+    }
+
+    /* ── Mobile ── */
     @media (max-width: 700px) {
       body { flex-direction: column; }
       .sidebar {
         width: 100%; height: auto;
         position: sticky; top: 0; z-index: 100;
         flex-direction: row; align-items: center;
-        padding: 0.75rem 1rem; gap: 0;
-        border-right: none; border-bottom: 1px solid #e2e8f0;
+        padding: 0.5rem 1rem; gap: 0;
+        border-right: none; border-bottom: 1px solid var(--border-sb);
       }
       .sidebar-logo { display: none; }
-      .sidebar-label { display: none; }
-      .sidebar-nav { flex-direction: row; gap: 0.25rem; }
+      .sidebar-nav { flex-direction: row; gap: 0; }
       .sidebar-footer { display: none; }
-      .nav-link { padding: 0.35rem 0.6rem; font-size: 0.85rem; }
-      .tile-input { width: 42px; height: 42px; font-size: 1.25rem; border-radius: 8px; }
-      header h1 { font-size: 1.35rem; }
+      .nav-link { padding: 0.375rem 0.5rem; font-size: 0.8125rem; }
+      .nav-link .nav-label { display: none; }
+      .nav-link.active::before { display: none; }
+      .tile-outer { width: 40px; height: 48px; }
+      .tile-input { font-size: 1.125rem; }
+      .tiles-row { gap: 0.375rem; }
+      header h1 { font-size: 3rem; }
+      header h2 { font-size: 1.875rem; }
+      .container { padding: 2rem 1rem 3rem; }
     }
   </style>
   <script>if(location.search.includes("q="))document.getElementById("robots-meta").content="noindex";</script>
 </head>
 <body>
   <aside class="sidebar">
-    <div class="sidebar-logo">Word Length</div>
+    <div class="sidebar-logo">Length</div>
     <nav>
       <div class="sidebar-nav">
         <a class="nav-link" href="/3-letter-words-with-these-letters/">
-          <span class="nav-num">3</span> Letters
+          <span class="nav-num">3</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/4-letter-words-with-these-letters/">
-          <span class="nav-num">4</span> Letters
+          <span class="nav-num">4</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/5-letter-words-with-these-letters/">
-          <span class="nav-num">5</span> Letters
+          <span class="nav-num">5</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/6-letter-words-with-these-letters/">
-          <span class="nav-num">6</span> Letters
+          <span class="nav-num">6</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link active" href="/">
-          <span class="nav-num">7</span> Letters
+          <span class="nav-num">7</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/8-letter-words-with-these-letters/">
-          <span class="nav-num">8</span> Letters
+          <span class="nav-num">8</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/9-letter-words-with-these-letters/">
-          <span class="nav-num">9</span> Letters
+          <span class="nav-num">9</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/10-letter-words-with-these-letters/">
-          <span class="nav-num">10</span> Letters
+          <span class="nav-num">10</span><span class="nav-label">ltrs</span>
         </a>
         <a class="nav-link" href="/11-letter-words-with-these-letters/">
-          <span class="nav-num">11</span> Letters
+          <span class="nav-num">11</span><span class="nav-label">ltrs</span>
         </a>
       </div>
     </nav>
     <div class="sidebar-footer">
-      <a href="/privacy">Privacy</a><br>
+      <a href="/privacy">Privacy</a>
       <a href="mailto:hello@7letterwordswiththeseletters.com">Contact</a>
     </div>
   </aside>
@@ -236,43 +567,66 @@
   <div class="main">
   <div class="container">
     <header>
-      <h1>7 Letter Words With These Letters</h1>
+      <p class="header-eyebrow">Collins SOWPODS · 32,909 words</p>
+      <h1>7 Letter Words</h1>
+      <h2>With These Letters</h2>
       <p>Type your letters and instantly find all 7-letter words you can make</p>
     </header>
 
     <div class="tiles-row" id="tilesRow">
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text" autofocus><span class="tile-label">1st</span></div>
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">2nd</span></div>
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">3rd</span></div>
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">4th</span></div>
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">5th</span></div>
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">6th</span></div>
-      <div class="tile-wrap"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><span class="tile-label">7th</span></div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text" autofocus><div class="tile-bg"></div></div>
+        <span class="tile-label">1st</span>
+      </div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><div class="tile-bg"></div></div>
+        <span class="tile-label">2nd</span>
+      </div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><div class="tile-bg"></div></div>
+        <span class="tile-label">3rd</span>
+      </div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><div class="tile-bg"></div></div>
+        <span class="tile-label">4th</span>
+      </div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><div class="tile-bg"></div></div>
+        <span class="tile-label">5th</span>
+      </div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><div class="tile-bg"></div></div>
+        <span class="tile-label">6th</span>
+      </div>
+      <div class="tile-wrap">
+        <div class="tile-outer"><input class="tile-input" maxlength="1" autocomplete="off" spellcheck="false" inputmode="text"><div class="tile-bg"></div></div>
+        <span class="tile-label">7th</span>
+      </div>
     </div>
     <div class="search-btn-row">
       <button id="searchBtn">Find Words</button>
-      <button class="reset-btn" id="resetBtn">↺ Reset</button>
+      <button class="reset-btn" id="resetBtn">Clear</button>
     </div>
-    <p class="hint">Use <strong>?</strong> as a wildcard for blank tiles · click a tile to edit</p>
+    <p class="hint">Use <kbd>?</kbd> as a wildcard for blank tiles · click a tile to edit</p>
 
     <div class="word-source-badge">
       <span class="badge-dot"></span>
-      32,909 words · Collins Scrabble Words (SOWPODS) — the official international tournament word list
+      Collins Scrabble Words (SOWPODS) — official international tournament word list
     </div>
 
     <div class="results" id="results">
-      <div class="empty">Enter some letters above to get started 👆</div>
+      <div class="empty">Enter some letters above to get started</div>
     </div>
 
     <div class="presets">
-      <p class="presets-label">Try these popular letter sets:</p>
-      <div style="display:flex;gap:8px;flex-wrap:wrap">
-        <button class="preset-btn" onclick="searchPreset('AEIRNST')">AEIRNST — The Magnificent 7</button>
-        <button class="preset-btn" onclick="searchPreset('SATINER')">SATINER — Bingo stem</button>
-        <button class="preset-btn" onclick="searchPreset('AILERON')">AILERON — Classic bingo</button>
-        <button class="preset-btn" onclick="searchPreset('PAINTER')">PAINTER</button>
-        <button class="preset-btn" onclick="searchPreset('ABCDEF?')">ABCDEF? — With wildcard</button>
-        <button class="preset-btn" onclick="searchPreset('STRANGE')">STRANGE</button>
+      <p class="presets-label">Popular letter sets</p>
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <button class="preset-btn" onclick="searchPreset('AEIRNST')"><span class="preset-letters">AEIRNST</span> The Magnificent 7</button>
+        <button class="preset-btn" onclick="searchPreset('SATINER')"><span class="preset-letters">SATINER</span> Bingo stem</button>
+        <button class="preset-btn" onclick="searchPreset('AILERON')"><span class="preset-letters">AILERON</span> Classic bingo</button>
+        <button class="preset-btn" onclick="searchPreset('PAINTER')"><span class="preset-letters">PAINTER</span> Common stem</button>
+        <button class="preset-btn" onclick="searchPreset('ABCDEF?')"><span class="preset-letters">ABCDEF?</span> With wildcard</button>
+        <button class="preset-btn" onclick="searchPreset('STRANGE')"><span class="preset-letters">STRANGE</span> High scorer</button>
       </div>
     </div>
 
@@ -355,6 +709,10 @@
     const WORD_MAP = {};
     let wordsReady = false;
 
+    const searchBtn = document.getElementById('searchBtn');
+    searchBtn.textContent = 'Loading…';
+    searchBtn.classList.add('loading-state');
+
     fetch('/words7.json?v=2')
       .then(r => r.json())
       .then(words => {
@@ -364,20 +722,26 @@
           WORD_MAP[sorted].push(word);
         });
         wordsReady = true;
-        document.getElementById('searchBtn').textContent = 'Find Words';
+        searchBtn.textContent = 'Find Words';
+        searchBtn.classList.remove('loading-state');
         const q = new URLSearchParams(location.search).get('q');
         if (q) searchPreset(q);
       })
       .catch(() => {
-        document.getElementById('searchBtn').textContent = 'Find Words';
+        searchBtn.textContent = 'Find Words';
+        searchBtn.classList.remove('loading-state');
         document.getElementById('results').innerHTML = '<div class="empty">Failed to load word list. Please refresh.</div>';
       });
-
-    document.getElementById('searchBtn').textContent = 'Loading…';
 
     // Tile keyboard navigation
     const tiles = Array.from(document.querySelectorAll('.tile-input'));
     tiles.forEach((tile, i) => {
+      tile.addEventListener('focus', function() {
+        tile.closest('.tile-outer').classList.add('focused');
+      });
+      tile.addEventListener('blur', function() {
+        tile.closest('.tile-outer').classList.remove('focused');
+      });
       tile.addEventListener('keydown', function(e) {
         if (e.key === 'Backspace') {
           e.preventDefault();
@@ -413,18 +777,23 @@
     function updateTileStyles() {
       let filled = 0;
       tiles.forEach(t => {
+        const outer = t.closest('.tile-outer');
         t.classList.remove('filled', 'wildcard');
-        if (t.value === '?') { t.classList.add('wildcard'); filled++; }
-        else if (t.value) { t.classList.add('filled'); filled++; }
+        outer.classList.remove('filled', 'wildcard');
+        if (t.value === '?') {
+          t.classList.add('wildcard'); outer.classList.add('wildcard'); filled++;
+        } else if (t.value) {
+          t.classList.add('filled'); outer.classList.add('filled'); filled++;
+        }
       });
       const resetBtn = document.getElementById('resetBtn');
-      if (filled === tiles.length) resetBtn.classList.add('visible');
+      if (filled > 0) resetBtn.classList.add('visible');
       else resetBtn.classList.remove('visible');
     }
 
     document.getElementById('resetBtn').addEventListener('click', function() {
       tiles.forEach(t => { t.value = ''; t.classList.remove('filled', 'wildcard'); });
-      document.getElementById('results').innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
+      document.getElementById('results').innerHTML = '<div class="empty">Enter some letters above to get started</div>';
       document.getElementById('resetBtn').classList.remove('visible');
       history.replaceState(null, '', location.pathname);
       tiles[0].focus();
@@ -464,13 +833,24 @@
       let html = '<div class="word-list">';
       words.forEach(w => {
         const score = scrabbleScore(w);
-        html += '<span class="word-tag" data-word="' + w + '">'
+        const letters = w.split('').map(c => '<span class="word-letter">' + c + '</span>').join('');
+        html += '<div class="word-tag" data-word="' + w + '">'
+          // Top: word name + pts badge
+          + '<div class="word-tag-top">'
           + '<span class="word-text">' + w + '</span>'
-          + '<span class="word-score" title="Scrabble point value">&#9733;' + score + '</span>'
+          + '<span class="word-score" title="Scrabble points">' + score + 'pt</span>'
+          + '</div>'
+          // Middle: freq + action buttons
+          + '<div style="display:flex;align-items:center;justify-content:space-between">'
           + '<span class="word-freq ' + freqClass(w) + '">' + freqLabel(w) + '</span>'
+          + '<div class="word-actions">'
           + '<button class="word-btn copy-btn" title="Copy" data-word="' + w + '">⧉</button>'
           + '<button class="word-btn def-btn" title="Definition" data-word="' + w + '">?</button>'
-          + '</span>';
+          + '</div>'
+          + '</div>'
+          // Bottom: letter row
+          + '<div class="word-letter-row">' + letters + '</div>'
+          + '</div>';
       });
       return html + '</div>';
     }
@@ -484,7 +864,7 @@
         return;
       }
       if (!input.trim()) {
-        container.innerHTML = '<div class="empty">Enter some letters above to get started 👆</div>';
+        container.innerHTML = '<div class="empty">Enter some letters above to get started</div>';
         return;
       }
       const clean = input.replace(/[^A-Za-z?]/g, '');
@@ -494,14 +874,14 @@
       }
 
       if (clean.length !== 7) {
-        container.innerHTML = '<h2>7-Letter Words</h2><div class="empty">Please enter exactly 7 letters (use ? as a wildcard for unknowns).</div>';
+        container.innerHTML = '<div class="results-header"><span class="results-count">7-Letter Words</span></div><div class="empty">Please enter exactly 7 letters (use ? as a wildcard for unknowns).</div>';
         return;
       }
 
       const sevenMatches = matchWords(clean);
 
       if (sevenMatches.length === 0) {
-        container.innerHTML = '<h2>7-Letter Words</h2><div class="empty">No 7-letter words found. Try different letters or use ? as a wildcard.</div>';
+        container.innerHTML = '<div class="results-header"><span class="results-count">7-Letter Words</span></div><div class="empty">No 7-letter words found. Try different letters or use ? as a wildcard.</div>';
         return;
       }
 
@@ -509,8 +889,10 @@
       history.replaceState(null, '', '?q=' + encodeURIComponent(clean.toUpperCase()));
 
       // Render immediately with score; freq badges show as 'Rare' until fetch completes
-      container.innerHTML = '<h2>7-Letter Words (' + sevenMatches.length + ' found)</h2>'
-        + '<p class="results-legend">&#9733; = Scrabble points &nbsp;·&nbsp; hover <span class="def-btn" style="display:inline-flex;pointer-events:none">?</span> for definition</p>'
+      container.innerHTML = '<div class="results-header">'
+        + '<span class="results-count">' + sevenMatches.length + ' words found</span>'
+        + '<span class="results-meta">7 letters · Collins SOWPODS</span>'
+        + '</div>'
         + buildWordList(sevenMatches);
 
       // Fetch frequencies in background, then refresh badges only
