@@ -137,7 +137,7 @@ export const PAGE_CONFIGS: PageConfig[] = [
     presets: [
       { letters: "CENTRALISED", desc: "Classic" },
       { letters: "NEWSLETTERS", desc: "Common" },
-      { letters: "ANTIHISTAMINE".slice(0, 11), desc: "Frequent" },
+      { letters: "STREAMLINED", desc: "Frequent" },
       { letters: "CONTAINTERS".slice(0, 11), desc: "Variant" },
       { letters: "ABCDEFGHIJ?", desc: "With wildcard" },
       { letters: "REINSTALLED".slice(0, 11), desc: "High scorer" },
