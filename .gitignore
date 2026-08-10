@@ -2,5 +2,6 @@
 words_alpha.txt
 
 .next/
+out/
 dist/
 node_modules/
