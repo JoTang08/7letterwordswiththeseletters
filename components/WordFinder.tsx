@@ -122,6 +122,7 @@ export default function WordFinder({ config }: WordFinderProps) {
   const [loading, setLoading] = useState(true);
   const [focusIdx, setFocusIdx] = useState<number | null>(null);
   const [recentSearches, setRecentSearches] = useState<string[]>([]);
+  const [activePreset, setActivePreset] = useState<string | null>(null);
 
   // Popup
   const [popup, setPopup] = useState<{ content: string; x: number; y: number } | null>(null);
@@ -224,6 +225,7 @@ export default function WordFinder({ config }: WordFinderProps) {
     const next = Array(n).fill("").map((_, i) => chars[i] || "");
     setValues(next);
     setSearched(false);
+    setActivePreset(letters.toUpperCase());
     setTimeout(() => {
       inputRefs.current[0]?.scrollIntoView({ behavior: "smooth", block: "center" });
       const clean = letters.replace(/[^A-Za-z?]/g, "");
@@ -377,18 +379,26 @@ export default function WordFinder({ config }: WordFinderProps) {
 
       {/* Presets */}
       <div className="presets">
-        <p className="presets-label">Popular letter sets</p>
+        <p className="presets-label">Popular Letter Sets</p>
         <div className="presets-row">
-          {presets.map(({ letters, desc }) => (
-            <button key={letters} className="preset-btn" onClick={() => applyPreset(letters)}>
+          {presets.map(({ letters, desc }, idx) => {
+            const isActive = activePreset === letters.toUpperCase() || (!activePreset && idx === 0);
+            return (
+            <button
+              key={letters}
+              className={`preset-btn${isActive ? " preset-btn-active" : ""}`}
+              onClick={() => applyPreset(letters)}
+            >
               <span className="preset-letters">{letters}</span>
-              {desc}
+              {desc && <span>— {desc}</span>}
             </button>
-          ))}
+            );
+          })}
         </div>
       </div>
 
       {/* Recent searches */}
+
       {recentSearches.length > 0 && (
         <div className="recent-searches">
           <p className="presets-label">Recent searches</p>

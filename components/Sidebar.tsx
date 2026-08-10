@@ -39,7 +39,7 @@ export default function Sidebar({ activeN }: SidebarProps) {
               className={`nav-link${isActive ? " active" : ""}`}
             >
               <span className="nav-num">{n}</span>
-              <span className="nav-label">ltrs</span>
+              <span className="nav-label">LTR</span>
             </Link>
           );
         })}
