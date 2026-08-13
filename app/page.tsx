@@ -54,8 +54,9 @@ export default function HomePage() {
         </ul>
 
         <h3>Frequently Asked Questions</h3>
-        <p><strong>Can I use this for Scrabble?</strong> Yes — the word list is Collins Scrabble Words (SOWPODS), the official authority for international tournament play. Every word shown is a legitimate, challengeable play.</p>
-        <p><strong>What does the ? wildcard do?</strong> A <strong>?</strong> acts as a blank tile — it can represent any letter. Type the known letters followed by <code>?</code> and the tool will find all 7-letter words possible.</p>
+        <p><strong>Can I use this for Scrabble?</strong><br />Yes — the word list is Collins Scrabble Words (SOWPODS), the official authority for international tournament play. Every word shown is a legitimate, challengeable play.</p>
+        <p><strong>What does the ? wildcard do?</strong><br />A <strong>?</strong> acts as a blank tile — it can represent any letter. Type the known letters followed by <code>?</code> and the tool will find all 7-letter words possible.</p>
+        <p><strong>What is a 7 letter word with these letters?</strong><br />It depends on your letters — there&rsquo;s no single answer. Enter your letters in the tool above and you&rsquo;ll instantly see every valid 7-letter word you can form (32,909 possibilities in the Collins SOWPODS list).</p>
       </section>
 
       <section className="info-section">
