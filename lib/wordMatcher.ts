@@ -22,15 +22,13 @@ export function matchWords(input: string, n: number, wordMap: WordMap): string[]
     if (wildcards === 0) {
       if (sorted === known) words.forEach((w) => matches.add(w));
     } else {
-      let ki = 0, si = 0;
-      while (ki < known.length && si < sorted.length) {
-        if (sorted[si] === known[ki]) { ki++; si++; }
-        else if (sorted[si] > known[ki]) break;
-        else si++;
-      }
-      if (ki === known.length && sorted.length - known.length <= wildcards) {
-        words.forEach((w) => matches.add(w));
-      }
+      // positional match: non-? letters must be at their exact index
+      words.forEach((w) => {
+        for (let i = 0; i < clean.length; i++) {
+          if (clean[i] !== "?" && clean[i] !== w[i]) return;
+        }
+        matches.add(w);
+      });
     }
   }
   return [...matches].sort();

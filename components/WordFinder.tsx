@@ -164,7 +164,7 @@ export default function WordFinder({ config }: WordFinderProps) {
       return next;
     });
     if (clean && idx < n - 1) {
-      setTimeout(() => inputRefs.current[idx + 1]?.focus(), 0);
+      inputRefs.current[idx + 1]?.focus();
     }
   };
 
@@ -183,10 +183,7 @@ export default function WordFinder({ config }: WordFinderProps) {
       inputRefs.current[idx + 1]?.focus();
     } else if (e.key === "Enter") {
       doSearch();
-    } else if (e.key === "?") {
-      e.preventDefault();
-      updateValue(idx, "?");
-    } else if (/^[a-zA-Z]$/.test(e.key)) {
+    } else if (/^[a-zA-Z\?]$/.test(e.key)) {
       e.preventDefault();
       updateValue(idx, e.key);
     }
