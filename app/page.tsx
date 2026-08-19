@@ -20,6 +20,12 @@ export const metadata: Metadata = {
 export default function HomePage() {
   return (
     <WordFinderPage config={config}>
+      <section className="info-section">
+        <h2>What Is a 7 Letter Word With These Letters?</h2>
+        <p>A 7 letter word with these letters is a word that can be formed using the letters you provide. For example, if your letters are A, E, I, N, R, S, and T, you can rearrange them to make 7-letter words such as RETAINS, RETINAS, and NASTIER.</p>
+        <p>Enter your letters into the word finder above to see which 7-letter words you can make.</p>
+      </section>
+
       <div className="info-section">
         <img
           src="/images/7-letter-words-finder.png"
