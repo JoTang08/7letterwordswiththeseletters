@@ -190,10 +190,8 @@ export default function WordFinder({ config }: WordFinderProps) {
   };
 
   const doSearch = useCallback(() => {
-    const input = values.join("");
-    if (!input.trim() || loading) return;
-    const clean = input.replace(/[^A-Za-z?]/g, "");
-    if (clean.length !== n) { setSearched(true); setResults([]); return; }
+    if (!values.some((v) => v) || loading) return;
+    const clean = values.map((v) => v || "?").join("").replace(/[^A-Za-z?]/g, "");
     const found = matchWords(clean, n, wordMapRef.current);
     setResults(found);
     setSearched(true);
@@ -305,7 +303,7 @@ export default function WordFinder({ config }: WordFinderProps) {
 
       {/* Hint */}
       <p className="hint">
-        Use <kbd>?</kbd> as a wildcard for blank tiles · click a tile to edit
+        Enter at least one letter · empty boxes match any letter · use <kbd>?</kbd> for a blank tile
       </p>
 
       {/* Results */}
@@ -318,11 +316,7 @@ export default function WordFinder({ config }: WordFinderProps) {
             <div className="results-header">
               <span className="results-count">{n}-Letter Words</span>
             </div>
-            <p className="empty">
-              {values.filter(Boolean).length !== n
-                ? `Please enter exactly ${n} letters (use ? as a wildcard).`
-                : "No words found. Try different letters or use ? as a wildcard."}
-            </p>
+            <p className="empty">No words found. Try different letters or use ? as a wildcard.</p>
           </>
         )}
         {results.length > 0 && (
