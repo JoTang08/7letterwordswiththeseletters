@@ -1,0 +1,385 @@
+/* ══════════════════════════════════════
+   8-Letter Bingo Finder
+   Prefix: el- (eight-letter), elf- (eight-letter-finder)
+══════════════════════════════════════ */
+
+body:has(.el-page) {
+  background: #eef0f4 !important;
+  overflow: auto !important;
+  color: #1a1a1a !important;
+}
+
+.el-page {
+  min-height: 100vh;
+  background: #eef0f4;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+  padding: 2rem 1rem 5rem;
+}
+
+/* ── Header ── */
+.el-header {
+  max-width: 860px;
+  margin: 0 auto 1.5rem;
+  text-align: center;
+}
+
+.el-back {
+  display: inline-block;
+  font-size: 0.875rem;
+  color: #1a3560;
+  text-decoration: none;
+  margin-bottom: 1rem;
+  transition: opacity .15s;
+}
+.el-back:hover { opacity: .7; }
+
+.el-h1 {
+  font-size: clamp(1.75rem, 4vw, 2.625rem);
+  font-weight: 800;
+  color: #111;
+  letter-spacing: -0.025em;
+  margin: 0 0 0.5rem;
+}
+
+.el-sub {
+  font-size: 1rem;
+  color: #555;
+  margin: 0;
+  line-height: 1.55;
+}
+
+/* ══════════════════════════════
+   FINDER (client component)
+══════════════════════════════ */
+.elf-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ── Input card ── */
+.elf-card {
+  background: #fff;
+  border-radius: 1.25rem;
+  padding: 1.75rem 2rem 1.5rem;
+  box-shadow: 0 1px 3px rgba(0,0,0,.06), 0 8px 32px rgba(0,0,0,.09);
+}
+
+.elf-eyebrow {
+  text-align: center;
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: #888;
+  margin: 0 0 1.125rem;
+}
+
+.elf-form {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.875rem;
+}
+
+.elf-input-wrap {
+  flex: 1;
+  position: relative;
+}
+
+.elf-input {
+  width: 100%;
+  padding: 0.75rem 2.25rem 0.75rem 1rem;
+  border: 2px solid #e0e0e0;
+  border-radius: 0.625rem;
+  font-size: 1.125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #1a2840;
+  background: #fafafa;
+  outline: none;
+  transition: border-color .2s, background .2s;
+  font-family: Georgia, serif;
+}
+.elf-input:focus { border-color: #1a3560; background: #fff; }
+.elf-input::placeholder { font-size: 0.9rem; font-weight: 400; letter-spacing: 0; text-transform: none; color: #bbb; font-family: inherit; }
+
+.elf-clear {
+  position: absolute;
+  right: 0.625rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  font-size: 0.875rem;
+  color: #bbb;
+  cursor: pointer;
+  padding: 0.25rem;
+  transition: color .15s;
+}
+.elf-clear:hover { color: #888; }
+
+.elf-btn {
+  padding: 0 1.75rem;
+  background: linear-gradient(135deg, #1a3560 0%, #243f72 100%);
+  color: #fff;
+  border: none;
+  border-radius: 0.625rem;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 4px 14px rgba(26,53,96,.3);
+  transition: opacity .2s, transform .1s;
+}
+.elf-btn:hover:not(:disabled) { opacity: .9; transform: translateY(-1px); }
+.elf-btn:disabled { background: #c8cdd8; color: #8a90a0; box-shadow: none; cursor: default; }
+
+.elf-tip {
+  font-size: 0.8125rem;
+  color: #94a3b8;
+  text-align: center;
+  margin: 0 0 1rem;
+  line-height: 1.5;
+}
+
+/* ── Presets ── */
+.elf-presets {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.elf-preset {
+  padding: 0.3rem 0.75rem;
+  border: 1.5px solid #dde3ee;
+  border-radius: 9999px;
+  background: #f5f7fb;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: #1a3560;
+  cursor: pointer;
+  letter-spacing: 0.06em;
+  font-family: Georgia, serif;
+  transition: background .15s, border-color .15s;
+}
+.elf-preset:hover { background: #eef3ff; border-color: #1a3560; }
+.elf-preset.active { background: #1a3560; color: #fff; border-color: #1a3560; }
+
+/* ── Results ── */
+.elf-results {
+  background: #fff;
+  border-radius: 1rem;
+  border: 1px solid #e8e8e8;
+  box-shadow: 0 2px 12px rgba(0,0,0,.06);
+  overflow: hidden;
+}
+
+.elf-error,
+.elf-empty {
+  padding: 2rem;
+  text-align: center;
+  color: #888;
+  font-size: 0.9375rem;
+  line-height: 1.7;
+}
+.elf-empty p { margin: 0 0 0.375rem; }
+
+.elf-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.875rem 1.25rem;
+  background: #fafafa;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.elf-summary-count {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #222;
+}
+
+.elf-summary-meta {
+  font-size: 0.8125rem;
+  color: #aaa;
+}
+
+/* ── Groups ── */
+.elf-groups {
+  padding: 0.75rem 1.25rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.elf-group {
+  border-bottom: 1px solid #f5f5f5;
+  padding-bottom: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+.elf-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+.elf-group-hd {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.elf-group-pin { font-size: 0.9rem; }
+
+.elf-group-label {
+  font-size: 0.6875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  color: #6b7280;
+  text-transform: uppercase;
+}
+
+.elf-group-letter {
+  color: #1a3560;
+  font-size: 0.8125rem;
+}
+
+/* ── Word rows ── */
+.elf-word-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.elf-word-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.4rem 0.75rem;
+  background: #fafbfc;
+  border: 1px solid #eaecf0;
+  border-radius: 0.5rem;
+  transition: box-shadow .12s, border-color .12s;
+}
+.elf-word-row:hover { box-shadow: 0 2px 8px rgba(26,53,96,.08); border-color: #c7d4ee; }
+
+.elf-word {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a2840;
+  font-family: Georgia, serif;
+  letter-spacing: 0.05em;
+}
+
+.elf-badges {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  flex-shrink: 0;
+}
+
+.elf-badge-bingo {
+  font-size: 0.625rem;
+  font-weight: 700;
+  color: #166534;
+  background: #dcfce7;
+  border: 1px solid #86efac;
+  border-radius: 9999px;
+  padding: 0.1rem 0.5rem;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.elf-badge-pts {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  color: #1a3560;
+  background: #e8eef8;
+  border-radius: 9999px;
+  padding: 0.15rem 0.5rem;
+  white-space: nowrap;
+}
+
+/* ══════════════════════════════
+   SEO / Explainer
+══════════════════════════════ */
+.el-seo {
+  max-width: 860px;
+  margin: 1.5rem auto 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.el-card {
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 1rem;
+  padding: 1.5rem 1.75rem;
+  box-shadow: 0 2px 8px rgba(0,0,0,.05);
+}
+
+.el-card h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 0.875rem;
+}
+
+.el-card h3 {
+  font-size: 0.8125rem;
+  font-weight: 800;
+  color: #444;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 1.25rem 0 0.5rem;
+}
+
+.el-card p {
+  font-size: 0.9375rem;
+  color: #555;
+  line-height: 1.7;
+  margin: 0 0 0.75rem;
+}
+.el-card p:last-child { margin-bottom: 0; }
+
+.el-card a { color: #1a3560; }
+
+.el-list {
+  padding-left: 1.25rem;
+  margin: 0 0 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+.el-list li {
+  font-size: 0.9375rem;
+  color: #555;
+  line-height: 1.7;
+}
+.el-list--ol { list-style: decimal; }
+
+/* ── Footer ── */
+.el-footer {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: #aaa;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 1.5rem;
+  margin-top: 0.5rem;
+}
+.el-footer a { color: #1a3560; text-decoration: none; }
+.el-footer a:hover { text-decoration: underline; }
+.el-footer p + p { margin-top: 0.375rem; }
+
+/* ── Responsive ── */
+@media (max-width: 600px) {
+  .el-page { padding: 1.5rem 0.75rem 4rem; }
+  .elf-card { padding: 1.25rem 1rem 1.25rem; }
+  .elf-form { flex-direction: column; }
+  .elf-btn { padding: 0.75rem; text-align: center; }
+}
