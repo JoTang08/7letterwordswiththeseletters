@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import WordFinderPage from "@/components/WordFinderPage";
 import { PAGE_CONFIGS, getConfig } from "@/lib/config";
+import "../wfp.css";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -40,13 +41,6 @@ export default async function SlugPage({ params }: Props) {
   return (
     <WordFinderPage config={config}>
       <div className="info-section">
-        <img
-          src={`/images/${n}-letter-words-finder.png`}
-          alt={`${n} Letter Words With These Letters - word finder tool interface`}
-          className="tool-screenshot"
-          width={1280}
-          height={800}
-        />
         <h2>How to Find {n} Letter Words With These Letters</h2>
         <p>
           Enter up to {n} letters and instantly find every valid {n}-letter word you can make.

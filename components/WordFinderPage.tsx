@@ -1,64 +1,62 @@
 import Link from "next/link";
-import Sidebar from "./Sidebar";
 import WordFinder from "./WordFinder";
 import { type PageConfig, PAGE_CONFIGS } from "@/lib/config";
 
 interface WordFinderPageProps {
   config: PageConfig;
-  children?: React.ReactNode; // info-section content
+  children?: React.ReactNode;
 }
 
 export default function WordFinderPage({ config, children }: WordFinderPageProps) {
-  const { n, wordCount, slug } = config;
-  const canonical = n === 7
-    ? "https://7letterwordswiththeseletters.com/"
-    : `https://7letterwordswiththeseletters.com/${slug}/`;
-
-  // Footer links: all other letter counts
-  const footerLinks = PAGE_CONFIGS.filter((c) => c.n !== n);
+  const { n, slug } = config;
+  const otherPages = PAGE_CONFIGS.filter((c) => c.n !== n);
 
   return (
-    <div className="layout">
-      <Sidebar activeN={n} />
-      <main className="main">
-        <div className="container">
-          {/* Header */}
-          <header className="page-header">
-            <span className="header-eyebrow">Collins SOWPODS · {wordCount.toLocaleString()} words</span>
-            <h1 className="header-h1">
-              <span className="header-h1-line1"><span className="header-num">{n}</span> Letter Words</span>
-              <span className="header-h1-line2">With These Letters</span>
-            </h1>
-            <p className="header-sub">
-              Type your letters and instantly find all {n}-letter words you can make
-            </p>
-          </header>
+    <div className="wfp-page">
 
-          {/* Interactive finder (client component) */}
-          <WordFinder config={config} />
+      {/* ── Header ── */}
+      <header className="wfp-header">
+        <Link href="/" className="wfp-back">← Home</Link>
+        <h1 className="wfp-h1">
+          {n} Letter Words With These Letters
+        </h1>
+        <p className="wfp-sub">
+          Find every valid {n}-letter word from your letters instantly — sorted by point value.
+        </p>
+      </header>
 
-          {/* SEO content */}
-          {children}
+      {/* ── Nav pills ── */}
+      <nav className="wfp-nav">
+        {PAGE_CONFIGS.map((c) => (
+          <Link
+            key={c.n}
+            href={c.n === 7 ? "/" : `/${c.slug}/`}
+            className={`wfp-nav-pill${c.n === n ? " active" : ""}`}
+          >
+            {c.n}
+          </Link>
+        ))}
+      </nav>
 
-          {/* Footer */}
-          <footer className="page-footer">
-            <p>
-              Also try:{" "}
-              {footerLinks.map((c, i) => (
-                <span key={c.n}>
-                  {i > 0 && " · "}
-                  <Link href={c.n === 7 ? "/" : `/${c.slug}/`}>
-                    {c.n} Letters
-                  </Link>
-                </span>
-              ))}
-            </p>
-            <p style={{ marginTop: "0.5rem" }}>
-              {n} Letter Words With These Letters &copy; 2026
-            </p>
-          </footer>
-        </div>
-      </main>
+      {/* ── Finder ── */}
+      <WordFinder config={config} />
+
+      {/* ── SEO content ── */}
+      {children && <div className="wfp-seo">{children}</div>}
+
+      {/* ── Footer ── */}
+      <footer className="wfp-footer">
+        <p>
+          Also try:{" "}
+          {otherPages.map((c, i) => (
+            <span key={c.n}>
+              {i > 0 && " · "}
+              <Link href={c.n === 7 ? "/" : `/${c.slug}/`}>{c.n} Letters</Link>
+            </span>
+          ))}
+        </p>
+        <p>{n} Letter Words With These Letters &copy; 2026 · <Link href="/privacy/">Privacy</Link></p>
+      </footer>
     </div>
   );
 }
