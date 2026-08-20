@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="100%" height="100%">
+  <defs>
+    <!-- 木质木块渐变 -->
+    <linearGradient id="tileGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#FFFDF7" />
+      <stop offset="100%" stop-color="#E5D6AF" />
+    </linearGradient>
+    
+    <!-- 阴影增加立体感 -->
+    <filter id="tileShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="3" stdDeviation="1.5" flood-color="#000000" flood-opacity="0.25"/>
+    </filter>
+  </defs>
+
+  <!-- 1. 干净圆角拼字块 -->
+  <rect x="4" y="4" width="56" height="56" rx="9" 
+        fill="url(#tileGrad)" 
+        stroke="#C5B388" 
+        stroke-width="2" 
+        filter="url(#tileShadow)" />
+
+  <!-- 2. 居中大号 '7' (纯粹、清晰、无杂质) -->
+  <text x="32" y="45" 
+        font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Arial Black', sans-serif" 
+        font-size="40" 
+        font-weight="900" 
+        fill="#2D251E" 
+        text-anchor="middle">7</text>
+</svg>
