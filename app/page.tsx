@@ -5,13 +5,13 @@ import { PAGE_CONFIGS } from "@/lib/config";
 import "./home.css";
 
 export const metadata: Metadata = {
-  title: "7 Letter Words With These Letters - Find Words Instantly",
-  description: "Find every 7-letter word from your letters instantly. Free anagram solver for Scrabble (NWL & Collins CSW) and Words With Friends. 25,000+ words.",
+  title: "7 Letter Words With These Letters - Find 50-Pt Bingos Instantly",
+  description: "Unscramble every valid 7-letter word using these letters instantly! Find 50-point Scrabble Bingos, use wildcards, and win your next word game now.",
   alternates: { canonical: "https://7letterwordswiththeseletters.com/" },
   openGraph: {
     type: "website",
     url: "https://7letterwordswiththeseletters.com/",
-    title: "7 Letter Words With These Letters - Find Words Instantly",
+    title: "7 Letter Words With These Letters - Find 50-Pt Bingos Instantly",
     description: "Find every 7-letter word from your letters instantly. Free anagram solver for Scrabble, Wordle, and word puzzles.",
     images: [{ url: "https://7letterwordswiththeseletters.com/og-image.png", width: 1200, height: 630 }],
   },
